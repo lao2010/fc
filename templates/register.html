@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>用户注册</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="auth-container">
+        <h2>新用户注册</h2>
+        <form onsubmit="handleRegister(event)">
+            <input type="text" name="username" placeholder="用户名" required>
+            <input type="password" name="password" placeholder="密码" required>
+            <input type="email" name="email" placeholder="电子邮箱">
+            <div class="auth-actions">
+                <button type="submit">立即注册</button>
+                <a href="/user/login">已有账号？立即登录</a>
+            </div>
+        </form>
+    </div>
+    <script>
+    function handleRegister(e) {
+        e.preventDefault();
+        const form = e.target;
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.textContent = '注册中...'; // 添加进度提示
+        
+        fetch('/user/register', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(Object.fromEntries(new FormData(form)))
+        }).then(response => {
+            if(response.ok) {
+                alert('注册成功，2秒后跳转至登录页');
+                setTimeout(() => {
+                    window.location.href = '/user/login';
+                }, 2000);
+            } else {
+                response.json().then(data => alert(data.error || '注册失败'));
+            }
+        }).catch(() => {
+            alert('网络连接异常');
+        }).finally(() => {
+            submitBtn.disabled = false;
+            submitBtn.textContent = '立即注册';
+        });
+    }
+    </script>
+</body>
+</html>

@@ -1,0 +1,231 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f7f7f7;
+    margin: 20px;
+    color: #333;
+}
+
+#equation-container {
+    margin-bottom: 20px;
+}
+
+.equation-input {
+    margin-bottom: 10px;
+}
+
+input[type="text"] {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    margin-right: 10px;
+    font-size: 16px;
+}
+
+button {
+    padding: 10px 15px;
+    border-radius: 5px;
+    border: none;
+    background-color: #5cb85c;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    outline: none;
+}
+
+button:hover {
+    background-color: #4cae4c;
+}
+
+button.remove-button {
+    background-color: #d9534f;
+}
+
+button.remove-button:hover {
+    background-color: #c9302c;
+}
+
+#result {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    border: 1px solid #e7e7e7;
+}
+
+/* 方程显示优化 */
+.equation-row {
+    display: flex;
+    align-items: center;
+    margin: 8px 0;
+    font-family: "Cambria Math", Symbola, sans-serif;
+}
+
+.variable {
+    color: #2c3e50;
+    font-weight: 700;
+    min-width: 30px;
+    margin-right: 10px;
+}
+
+.equals {
+    color: #7f8c8d;
+    margin: 0 8px;
+}
+
+.expression {
+    color: #27ae60;
+    font-size: 1.1em;
+}
+
+.exponent {
+    font-size: 0.8em;
+    vertical-align: super;
+}
+
+.fraction {
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    margin: 0 2px;
+}
+
+.fraction:after {
+    content: '';
+    border-top: 1px solid #666;
+    display: block;
+    margin-top: -1px;
+}
+
+.solution-group h3 {
+    color: #2980b9;
+    font-size: 1.2em;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+}
+
+.loading {
+    color: #666;
+    font-style: italic;
+    padding: 10px;
+    border: 1px dashed #ddd;
+}
+
+/* 添加用户控制区域样式 */
+.user-controls {
+    margin-top: 20px;
+    padding: 10px;
+    border-top: 1px solid #eee;
+}
+
+#account-settings {
+    background-color: #ff6b6b;
+    color: white;
+    border: 2px solid #ff0000;
+    padding: 10px 20px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+#account-settings:hover {
+    background-color: #ff5252;
+}
+
+/* 账户管理页样式 */
+.profile-section {
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.profile-section button {
+    margin: 10px;
+    padding: 12px 24px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.back-link {
+    margin-top: 30px;
+    text-align: center;
+}
+
+/* 登录页样式 */
+.auth-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.auth-buttons {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.login-btn {
+    background-color: #3498db !important;
+}
+
+.register-btn {
+    background-color: #2ecc71 !important;
+}
+
+.auth-container input {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 8px;
+}
+
+/* 注册页样式 */
+.auth-actions {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.register-link {
+    color: #3498db;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.register-link:hover {
+    text-decoration: underline;
+}
+
+/* 加载状态样式 */
+button[disabled] {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.auth-container button:after {
+    content: '';
+    display: none;
+    margin-left: 8px;
+    width: 12px;
+    height: 12px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 0.8s linear infinite;
+}
+
+button[disabled]:after {
+    display: inline-block;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>方程求解器</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            chtml: {
+                scale: 1.1
+            }
+        };
+    </script>
+    <script src="/static/mathjax/MathJax-3.2.0/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>方程求解工具</h1>
+        <form id="equations-form">
+            <div class="equation-group">
+                <input type="text" name="equation" placeholder="例如: y = x+5" class="equation-input">
+                <button class="remove-btn" disabled>删除</button>
+            </div>
+        </form>
+        <button id="add-equation">添加方程</button>
+        <button id="solve">开始解方程</button>
+        <div id="result"></div>
+        
+        <div class="user-controls">
+            <button id="account-settings" onclick="handleAccountManagement()">
+                账户管理
+            </button>
+            <button id="login-btn" onclick="window.location.href='/user/login'" 
+                    style="margin-left: 10px; background-color: #3498db;">
+                登录/注册
+            </button>
+        </div>
+    </div>
+    <script src="/static/script.js"></script>
+</body>
+</html>
+
+<script>
+function handleAccountManagement() {
+    // 跳转到账户管理页面
+    window.location.href = '/user/profile';
+    
+    // 或者使用AJAX验证用户状态
+    /* fetch('/user/check_status').then(response => {
+        if(response.ok) {
+            window.location.href = '/user/profile';
+        } else {
+            alert('请先登录');
+        }
+    }) */
+}
+</script>

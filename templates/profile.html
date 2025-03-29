@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>账户管理</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>账户管理</h1>
+        
+        <div class="profile-section">
+            <h3>剩余使用次数: {{ user.check_usage() }}</h3>
+            <button onclick="location.href='/user/update_password'">修改密码</button>
+            <button onclick="location.href='/user/update_email'">修改邮箱</button>
+            <!-- 删除使用记录按钮 -->
+        </div>
+        
+        <div class="back-link">
+            <a href="/">返回首页</a>
+        </div>
+    </div>
+</body>
+</html>
