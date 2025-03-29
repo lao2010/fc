@@ -165,12 +165,14 @@ button.remove-button:hover {
     border-radius: 8px;
 }
 
-.auth-buttons {
-    margin-top: 20px;
+/* 添加以下规则防止按钮堆叠 */
+.nav-buttons {
+    position: absolute;
+    top: 20px;
+    right: 20px;
     display: flex;
     gap: 10px;
 }
-
 .login-btn {
     background-color: #3498db !important;
 }

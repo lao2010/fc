@@ -23,6 +23,9 @@ def init_db():
     conn.commit()
     conn.close()
 
+# Change from relative import to absolute
+from models import db  # 从顶层models包导入db实例
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
@@ -31,9 +34,14 @@ class User(db.Model):
     usage_count = db.Column(db.Integer, default=0)
     last_used = db.Column(db.Date)
 
-    def __init__(self, username, email, password, is_admin=False):
+    def __init__(self, username, email=None):  # Remove password from constructor
         self.username = username
         self.email = email
+        self.usage_count = 0
+        self.last_used = datetime.now().date()
+
+    # Keep the password handling in separate method
+    def set_password(self, password):
         self.password_hash = generate_password_hash(password)
         self.is_admin = is_admin
         self.daily_usage = 0
@@ -41,15 +49,6 @@ class User(db.Model):
         self.usage_count = 0
         self.last_used = datetime.now().date()
         
-    def save(self):
-        conn = sqlite3.connect(DB_PATH)
-        cursor = conn.cursor()
-        cursor.execute('''
-            INSERT INTO users (username, email, password_hash, is_admin, daily_usage, last_reset_date)
-            VALUES (?, ?, ?, ?, ?, ?)
-        ''', (self.username, self.email, self.password_hash, self.is_admin, self.daily_usage, self.last_reset_date))
-        conn.commit()
-        conn.close()
 
     @staticmethod
     def get_by_username(username):

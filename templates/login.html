@@ -7,41 +7,17 @@
 <body>
     <div class="auth-container">
         <h2>用户认证</h2>
-        <form onsubmit="handleAuth(event)">
+        <!-- 修复表单结构 -->
+        <!-- 在表单action中使用url_for生成路径 -->
+        <form method="POST" action="/user/login">
             <input type="text" name="username" placeholder="用户名" required>
             <input type="password" name="password" placeholder="密码" required>
-            <!-- 修改注册按钮部分 -->
             <div class="auth-buttons">
-                <button type="button" class="login-btn" onclick="handleAuth(event, 'login')">登录</button>
+                <button type="submit">登录</button>
                 <a href="/user/register" class="register-link">没有账号？立即注册</a>
             </div>
         </form>
     </div>
-    <script>
-    function handleAuth(e, action) {
-        e.preventDefault();
-        const form = e.target.closest('form');
-        const submitBtn = form.querySelector('button[type="button"]');
-        submitBtn.disabled = true; // 禁用按钮
-        
-        fetch(`/user/${action}`, {
-            method: 'POST',
-            body: new FormData(form)
-        }).then(response => {
-            if(response.ok) {
-                alert('操作成功，即将跳转...');
-                window.location.href = '/';
-            } else {
-                response.json().then(data => {
-                    alert(data.error || '操作失败');
-                });
-            }
-        }).catch(() => {
-            alert('网络请求失败');
-        }).finally(() => {
-            submitBtn.disabled = false; // 恢复按钮
-        });
-    }
-    </script>
+    <!-- 移除旧的JavaScript处理代码 -->
 </body>
 </html>

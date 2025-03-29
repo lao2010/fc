@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template, redirect, session, request, jsonify
 from models.user import User, init_db
 from datetime import datetime
+from flask import flash
+from flask import Flask, redirect, url_for, session, request, flash  # 添加url_for导入
 
 user_bp = Blueprint('user', __name__, url_prefix='/user')
 
@@ -11,33 +13,48 @@ def initialize_app(app):
 
 @user_bp.route('/register', methods=['POST'])
 def register():
-    data = request.json
-    username = data.get('username')
-    email = data.get('email')
-    password = data.get('password')
+    username = request.form.get('username', '').strip()
+    password = request.form.get('password', '').strip()
+    email = request.form.get('email', '').strip()
+
+    # Add validation for required fields
+    if not username or not password:
+        flash('用户名和密码不能为空')
+        return redirect('/user/register')
     
-    if not all([username, email, password]):
-        return jsonify({'error': '缺少必要参数'}), 400
+    # Create user without password in constructor
+    new_user = User(username=username, email=email)
+    new_user.set_password(password)  # Set password via method
     
-    if User.get_by_username(username):
-        return jsonify({'error': '用户名已存在'}), 400
+    db.session.add(new_user)
+    db.session.commit()
     
-    user = User(username, email, password)
-    user.save()
-    return jsonify({'message': '注册成功'}), 201
+    return redirect('/user/login')
 
 @user_bp.route('/login', methods=['GET', 'POST'])
 def login():
-    error = None  # Initialize error variable
     if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '').strip()
+        
+        # Add debug logging
+        print(f"[AUTH] Login attempt - Username: {username}")
+        
         user = User.get_by_username(username)
-        if user and user.check_password(password):
-            session['user_id'] = user.id
-            return redirect('/')
-        error = '用户名或密码错误'  # Set error message
-    return render_template('login.html', error=error)
+        if user:
+            print(f"[AUTH] User found - Password match: {user.check_password(password)}")
+            
+        if not user or not user.check_password(password):
+            flash('用户名或密码错误')
+            return redirect(url_for('user.login'))  # 现在可以正确调用url_for
+            
+        session['user_id'] = user.id
+        session.modified = True
+        print(f"[AUTH] Login successful - User ID: {user.id}")
+        return redirect(url_for('index'))  # Redirect to main page
+    
+    # Handle GET requests
+    return render_template('login.html')
 
 @user_bp.route('/register', methods=['GET'])
 def show_register():
@@ -98,13 +115,15 @@ def check_status():
 
 @user_bp.route('/check_usage')
 def check_usage():
-    if 'user_id' not in session:
-        return jsonify({'error': '未登录'}), 401
+    user = None
+    if 'user_id' in session:
+        user = User.get_by_id(session['user_id'])
     
-    user = User.get_by_id(session['user_id'])
+    # Return basic state even when not logged in
     return jsonify({
-        'remaining': user.check_usage(),
-        'is_disabled': user.check_usage() <= 0
+        'logged_in': user is not None,
+        'remaining': user.check_usage() if user else 0,
+        'is_disabled': user.check_usage() <= 0 if user else True
     })
 
 @user_bp.route('/update_password', methods=['POST'])

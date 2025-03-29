@@ -6,15 +6,19 @@ from sympy.parsing.sympy_parser import parse_expr  # 移除 SympifyError 从此�
 from sympy import Eq, solve, symbols, latex  # 其他原有导入
 from models.user import User  # 添加User模型导入
 
-app = Flask(__name__)
+app = Flask(__name__, instance_path='e:\\fc\\instance')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Add this line
-app.secret_key = 'development-key'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.secret_key = 'your-secret-key-here'
 
-# Initialize database
-db.init_app(app)
+# Initialize database once
+db.init_app(app)  # <-- This is the only initialization needed
+
 with app.app_context():
     db.create_all()
+
+# Remove this duplicate initialization
+# db.init_app(app)  <-- Delete this line
 app.config['SESSION_COOKIE_SECURE'] = False
 
 # 只保留一次蓝图注册
@@ -31,6 +35,7 @@ def inject_user():
 
 @app.route('/')
 def index():
+    print(f"[DEBUG] 当前会话用户ID: {session.get('user_id')}")  # 添加调试日志
     return render_template('index.html')
 
 @app.route('/solve', methods=['POST'])

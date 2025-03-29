@@ -5,10 +5,12 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
+    <!-- 保持现有base.html导航结构不变 -->
     <div class="nav-buttons">
         {% if current_user %}
-            <button id="solve-btn">
-              剩余{{ current_user.check_usage() }}次可用  <!-- 确保带括号调用方法 -->
+            <button id="solve-btn" class="{{ 'disabled' if current_user.check_usage() <= 0 }}" 
+                    {{ 'disabled' if current_user.check_usage() <=0 }}>
+                开始解方程 (剩余{{ current_user.check_usage() }}次)
             </button>
             <button onclick="location.href='/user/profile'">账户管理</button>
         {% else %}

@@ -8,9 +8,12 @@
     <div class="auth-container">
         <h2>新用户注册</h2>
         <form onsubmit="handleRegister(event)">
-            <input type="text" name="username" placeholder="用户名" required>
-            <input type="password" name="password" placeholder="密码" required>
-            <input type="email" name="email" placeholder="电子邮箱">
+            <form method="POST" action="/user/register">
+                <input type="text" name="username" placeholder="用户名" required>
+                <input type="password" name="password" placeholder="密码" required> <!-- 确保name属性正确 -->
+                <input type="email" name="email" placeholder="电子邮箱">
+                <button type="submit">注册</button>
+            </form>
             <div class="auth-actions">
                 <button type="submit">立即注册</button>
                 <a href="/user/login">已有账号？立即登录</a>
