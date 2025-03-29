@@ -111,29 +111,15 @@ class User(db.Model):
         conn.commit()
         conn.close()
 
-    def check_usage(self):
-        print(f"Checking usage for user: {self.username}")  # 调试日志
+    def check_usage(self):  # 注意这是一个实例方法
         today = datetime.now().date()
-        
         if isinstance(self.last_used, str):
-            print(f"Original last_used: {self.last_used}")  # 调试日期转换
-            try:
-                self.last_used = datetime.strptime(self.last_used, '%Y-%m-%d').date()
-            except Exception as e:
-                print(f"Date conversion error: {e}")
-        
-        print(f"Today: {today}, Last used: {self.last_used}")  # 调试日期对比
+            self.last_used = datetime.strptime(self.last_used, '%Y-%m-%d').date()
         
         if self.last_used != today:
-            print("Resetting daily usage")  # 调试重置逻辑
             self.usage_count = 0
             self.last_used = today
-            try:
-                db.session.commit()
-                print("Reset successful")
-            except Exception as e:
-                print(f"Commit error: {e}")
-        
+            db.session.commit()
         return 50 - self.usage_count
         
     def record_usage(self):

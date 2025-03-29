@@ -7,7 +7,9 @@
 <body>
     <div class="nav-buttons">
         {% if current_user %}
-            <button id="solve-btn">{{ current_user.check_usage() }}次可用</button>
+            <button id="solve-btn">
+              剩余{{ current_user.check_usage() }}次可用  <!-- 确保带括号调用方法 -->
+            </button>
             <button onclick="location.href='/user/profile'">账户管理</button>
         {% else %}
             <button onclick="location.href='/user/login'">登录/注册</button>

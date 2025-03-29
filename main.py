@@ -21,16 +21,13 @@ app.config['SESSION_COOKIE_SECURE'] = False
 app.register_blueprint(user_bp)
 initialize_app(app)
 
-# 在现有上下文处理器后添加调试输出
+# 修改上下文处理器（移除嵌套函数）
 @app.context_processor
 def inject_user():
-    def get_current_user():
-        if 'user_id' in session:
-            user = User.get_by_id(session['user_id'])
-            print(f"[DEBUG] Current User: {user.username if user else None}")  # 添加调试日志
-            return user
-        return None
-    return dict(current_user=get_current_user)
+    user = None
+    if 'user_id' in session:
+        user = User.get_by_id(session['user_id'])
+    return dict(current_user=user)  # 直接返回用户实例或None
 
 @app.route('/')
 def index():
