@@ -1,12 +1,14 @@
-import sys
-sys.path.append('e:\\fc')
-from flask import Flask, render_template, request, jsonify
-from sympy import symbols, Eq, solve, sympify, latex  # 添加导入
+from flask import Flask, request, jsonify, session, render_template  # Add render_template import
 from routes.user_routes import user_bp, initialize_app
 from models import db  # Add this import
+from sympy import sympify, SympifyError  # 修正异常导入位置
+from sympy.parsing.sympy_parser import parse_expr  # 移除 SympifyError 从此处导入
+from sympy import Eq, solve, symbols, latex  # 其他原有导入
+from models.user import User  # 添加User模型导入
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'  # Add database config
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Add this line
 app.secret_key = 'development-key'
 
 # Initialize database
@@ -18,6 +20,17 @@ app.config['SESSION_COOKIE_SECURE'] = False
 # 只保留一次蓝图注册
 app.register_blueprint(user_bp)
 initialize_app(app)
+
+# 在现有上下文处理器后添加调试输出
+@app.context_processor
+def inject_user():
+    def get_current_user():
+        if 'user_id' in session:
+            user = User.get_by_id(session['user_id'])
+            print(f"[DEBUG] Current User: {user.username if user else None}")  # 添加调试日志
+            return user
+        return None
+    return dict(current_user=get_current_user)
 
 @app.route('/')
 def index():
@@ -50,7 +63,7 @@ def solve_equations():
             try:
                 lhs, rhs = equation[0], equation[1]
                 eqlist.append(Eq(sympify(lhs), sympify(rhs)))
-            except (IndexError, TypeError, SympifyError) as e:
+            except (IndexError, TypeError, SympifyError) as e:  # 现在可以正确识别 SympifyError
                 print(f"Equation {i} error: {e}")
 
         # Solve equations

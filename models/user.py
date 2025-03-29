@@ -112,11 +112,28 @@ class User(db.Model):
         conn.close()
 
     def check_usage(self):
+        print(f"Checking usage for user: {self.username}")  # 调试日志
         today = datetime.now().date()
+        
+        if isinstance(self.last_used, str):
+            print(f"Original last_used: {self.last_used}")  # 调试日期转换
+            try:
+                self.last_used = datetime.strptime(self.last_used, '%Y-%m-%d').date()
+            except Exception as e:
+                print(f"Date conversion error: {e}")
+        
+        print(f"Today: {today}, Last used: {self.last_used}")  # 调试日期对比
+        
         if self.last_used != today:
+            print("Resetting daily usage")  # 调试重置逻辑
             self.usage_count = 0
             self.last_used = today
-            self.save()
+            try:
+                db.session.commit()
+                print("Reset successful")
+            except Exception as e:
+                print(f"Commit error: {e}")
+        
         return 50 - self.usage_count
         
     def record_usage(self):
@@ -131,3 +148,10 @@ class User(db.Model):
     @classmethod
     def get_by_username(cls, username):
         return cls.query.filter_by(username=username).first()
+
+    # 在User类中添加重置方法
+    @classmethod
+    def reset_usage_stats(cls):
+        """清空所有用户的使用计数"""
+        cls.query.update({'usage_count': 0, 'last_used': datetime.now().date()})
+        db.session.commit()

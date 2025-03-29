@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>方程求解系统</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="nav-buttons">
+        {% if current_user %}
+            <button id="solve-btn">{{ current_user.check_usage() }}次可用</button>
+            <button onclick="location.href='/user/profile'">账户管理</button>
+        {% else %}
+            <button onclick="location.href='/user/login'">登录/注册</button>
+        {% endif %}
+    </div>
+    
+    {% block content %}{% endblock %}
+    
+    <script src="/static/scripts/main.js"></script>
+</body>
+</html>

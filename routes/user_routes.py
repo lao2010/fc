@@ -6,8 +6,8 @@ user_bp = Blueprint('user', __name__, url_prefix='/user')
 
 def initialize_app(app):
     """Initialize the application with database setup"""
-    with app.app_context():
-        init_db()
+    # Remove the with app.app_context() and init_db() calls
+    pass  # SQLAlchemy now handles initialization
 
 @user_bp.route('/register', methods=['POST'])
 def register():
@@ -96,6 +96,17 @@ def check_status():
     # 后续可添加真实用户状态检查
     return jsonify({'logged_in': True})
 
+@user_bp.route('/check_usage')
+def check_usage():
+    if 'user_id' not in session:
+        return jsonify({'error': '未登录'}), 401
+    
+    user = User.get_by_id(session['user_id'])
+    return jsonify({
+        'remaining': user.check_usage(),
+        'is_disabled': user.check_usage() <= 0
+    })
+
 @user_bp.route('/update_password', methods=['POST'])
 def update_password():
     if 'user_id' not in session:
@@ -142,6 +153,16 @@ def debug_session():
         'is_logged_in': 'user_id' in session
     })
 
+@user_bp.route('/check_session')
+def check_session():
+    if 'user_id' not in session:
+        return jsonify({'logged_in': False})
+    
+    user = User.get_by_id(session['user_id'])
+    return jsonify({
+        'logged_in': True,
+        'remain': user.check_usage() if user else 0
+    })
 
 # 确保使用正确的蓝图对象定义路由
 @user_bp.route('/')  # 修改前是 @app.route('/')
